@@ -72,6 +72,30 @@ impl<'r> OpenApiFromParam<'r> for &'r str {
     }
 }
 
+#[cfg(feature = "uuid")]
+impl<'r> OpenApiFromParam<'_> for rocket_contrib::uuid::Uuid {
+    fn path_parameter(gen: &mut OpenApiGenerator, name: String) -> Result {
+        let schema = gen.json_schema::<uuid::Uuid>();
+        Ok(Parameter {
+            name,
+            location: "path".to_owned(),
+            description: None,
+            required: true,
+            deprecated: false,
+            allow_empty_value: false,
+            value: ParameterValue::Schema {
+                style: None,
+                explode: None,
+                allow_reserved: false,
+                schema,
+                example: None,
+                examples: None,
+            },
+            extensions: Default::default(),
+        })
+    }
+}
+
 // OpenAPI specification does not support optional path params, so we leave `required` as true,
 // even for Options and Results.
 impl<'r, T: OpenApiFromParam<'r>> OpenApiFromParam<'r> for StdResult<T, T::Error> {

@@ -74,6 +74,30 @@ impl<'r> OpenApiFromFormField<'r> for &'r str {
     }
 }
 
+#[cfg(feature = "uuid")]
+impl OpenApiFromFormField<'_> for rocket_contrib::uuid::Uuid {
+    fn form_parameter(gen: &mut OpenApiGenerator, name: String, required: bool) -> Result {
+        let schema = gen.json_schema::<uuid::Uuid>();
+        Ok(Parameter {
+            name,
+            location: "query".to_owned(),
+            description: None,
+            required,
+            deprecated: false,
+            allow_empty_value: false,
+            value: ParameterValue::Schema {
+                style: None,
+                explode: None,
+                allow_reserved: false,
+                schema,
+                example: None,
+                examples: None,
+            },
+            extensions: Default::default(),
+        })
+    }
+}
+
 // OpenAPI specification does not support optional path params, so we leave `required` as true,
 // even for Options and Results.
 impl<'r, T: OpenApiFromFormField<'r>> OpenApiFromFormField<'r> for FormResult<'r, T> {
