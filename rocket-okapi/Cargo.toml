@@ -21,3 +21,6 @@ git = "https://github.com/SergioBenitez/Rocket.git"
 branch = "master"
 default-features = false
 features = ["json"]
+
+[patch.crates-io]
+schemars = { git = "https://github.com/raffomania/schemars", branch = "fix-unnecessary-allof"}
